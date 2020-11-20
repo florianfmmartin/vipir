@@ -12,6 +12,7 @@ then
     echo "env          Enter/Leave the virtual environment."
     echo "graph        Show installed packages."
     echo "freeze       Freeze installed packages."
+    echo "require      Install required packages specified in ./requirements.txt."
 
 elif [ $1 = "setup" ]
 then
@@ -111,6 +112,26 @@ then
             pip freeze > requirements.txt
         else
             echo "Enter the virtual environment to freeze packages."
+        fi
+    else
+        echo "There is no virtual environment setup in this project."
+    fi
+
+elif [ $1 = "require" ]
+then
+    VIPIR=.vipir/
+    if [ -d "$VIPIR" ]
+    then
+        if [ -f "requirements.txt" ]
+        then
+            if [ ! -z "$VIRTUAL_ENV" ]
+            then
+                pip install -r requirements.txt
+            else
+                echo "Enter the virtual environment to installed required packages."
+            fi
+        else
+            echo "No requirements found."
         fi
     else
         echo "There is no virtual environment setup in this project."
