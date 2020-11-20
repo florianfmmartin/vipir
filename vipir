@@ -1,0 +1,110 @@
+#!/bin/env sh
+
+if [ $1 = "help" ]
+then
+    echo "Vipir"
+    echo
+    echo "Commands:"
+    echo
+    echo "setup        Setup a virtual environment."
+    echo "install      Install a package."
+    echo "uninstall    Uninstall a package."
+    echo "env          Enter/Leave the virtual environment."
+    echo "graph        Show installed packages."
+    echo "freeze       Freeze installed packages."
+
+elif [ $1 = "setup" ]
+then
+    VIPIR=.vipir/
+    if [ -d "$VIPIR" ]
+    then
+        echo "There is already a virtual environment setup in this project."
+    else
+        PROJECT=$(basename "$PWD")
+        echo "Creating a virtual environment..."
+        virtualenv ".vipir/$PROJECT"
+
+        if [ -f ".gitignore" ]
+        then
+            echo ".vipir" >> .gitignore
+        fi
+    fi
+
+elif [ $1 = "install" ]
+then
+    VIPIR=.vipir/
+    if [ -d "$VIPIR" ]
+    then
+        for var in "$@"
+        do
+            if [[ "$var" != "$0" && "$var" != "$1" ]]
+            then
+                pip install "$var"
+            fi
+        done
+    else
+        echo "There is no virtual environment setup in this project."
+    fi
+
+elif [ $1 = "uninstall" ]
+then
+    VIPIR=.vipir/
+    if [ -d "$VIPIR" ]
+    then
+        for var in "$@"
+        do
+            if [[ "$var" != "$0" && "$var" != "$1" ]]
+            then
+                pip uninstall "$var"
+            fi
+        done
+    else
+        echo "There is no virtual environment setup in this project."
+    fi
+
+elif [ $1 = "env" ]
+then
+    VIPIR=.vipir/
+    if [ -d "$VIPIR" ]
+    then
+        if [ -z "$VIRTUAL_ENV" ]
+        then
+            PROJECT=$(basename "$PWD")
+            source .vipir/$PROJECT/bin/activate
+        else
+            deactivate
+        fi
+    else
+        echo "There is no virtual environment setup in this project."
+    fi
+
+elif [ $1 = "graph" ]
+then
+    VIPIR=.vipir/
+    if [ -d "$VIPIR" ]
+    then
+        if [ ! -z "$VIRTUAL_ENV" ]
+        then
+            pip list
+        fi
+    else
+        echo "There is no virtual environment setup in this project."
+    fi
+
+elif [ $1 = "freeze" ]
+then
+    VIPIR=.vipir/
+    if [ -d "$VIPIR" ]
+    then
+        if [ ! -z "$VIRTUAL_ENV" ]
+        then
+            pip freeze > requirements.txt
+        fi
+    else
+        echo "There is no virtual environment setup in this project."
+    fi
+
+else
+    echo "Command unknown type 'vipir help' for help."
+
+fi
