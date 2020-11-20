@@ -35,13 +35,16 @@ then
     VIPIR=.vipir/
     if [ -d "$VIPIR" ]
     then
-        for var in "$@"
-        do
-            if [[ "$var" != "$0" && "$var" != "$1" ]]
-            then
-                pip install "$var"
-            fi
-        done
+        if [ ! -z "$VIRTUAL_ENV" ]
+        then
+            for var in "$@"
+            do
+                if [[ "$var" != "$0" && "$var" != "$1" ]]
+                then
+                    pip install "$var"
+                fi
+            done
+        fi
     else
         echo "There is no virtual environment setup in this project."
     fi
@@ -51,13 +54,18 @@ then
     VIPIR=.vipir/
     if [ -d "$VIPIR" ]
     then
-        for var in "$@"
-        do
-            if [[ "$var" != "$0" && "$var" != "$1" ]]
-            then
-                pip uninstall "$var"
-            fi
-        done
+        if [ ! -z "$VIRTUAL_ENV" ]
+        then
+            for var in "$@"
+            do
+                if [[ "$var" != "$0" && "$var" != "$1" ]]
+                then
+                    pip uninstall "$var"
+                fi
+            done
+        else
+            echo "Enter the virtual environment to uninstall packages."
+        fi
     else
         echo "There is no virtual environment setup in this project."
     fi
@@ -65,17 +73,17 @@ then
 elif [ $1 = "env" ]
 then
     VIPIR=.vipir/
-    if [ -d "$VIPIR" ]
+    if [ -z "$VIRTUAL_ENV" ]
     then
-        if [ -z "$VIRTUAL_ENV" ]
+        if [ -d "$VIPIR" ]
         then
             PROJECT=$(basename "$PWD")
             source .vipir/$PROJECT/bin/activate
         else
-            deactivate
+            echo "There is no virtual environment setup in this project."
         fi
     else
-        echo "There is no virtual environment setup in this project."
+        deactivate
     fi
 
 elif [ $1 = "graph" ]
@@ -86,6 +94,8 @@ then
         if [ ! -z "$VIRTUAL_ENV" ]
         then
             pip list
+        else
+            echo "Enter the virtual environment to list packages."
         fi
     else
         echo "There is no virtual environment setup in this project."
@@ -99,6 +109,8 @@ then
         if [ ! -z "$VIRTUAL_ENV" ]
         then
             pip freeze > requirements.txt
+        else
+            echo "Enter the virtual environment to freeze packages."
         fi
     else
         echo "There is no virtual environment setup in this project."
