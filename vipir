@@ -1,6 +1,6 @@
-#!/bin/env sh
+#!/bin/bash
 
-if [ $1 = "help" ]
+if [ "$1" = "help" ]
 then
     echo "Vipir"
     echo
@@ -14,7 +14,7 @@ then
     echo "freeze       Freeze installed packages."
     echo "require      Install required packages specified in ./requirements.txt."
 
-elif [ $1 = "setup" ]
+elif [ "$1" = "setup" ]
 then
     VIPIR=.vipir/
     if [ -d "$VIPIR" ]
@@ -31,7 +31,7 @@ then
         fi
     fi
 
-elif [ $1 = "install" ]
+elif [ "$1" = "install" ]
 then
     VIPIR=.vipir/
     if [ -d "$VIPIR" ]
@@ -42,7 +42,7 @@ then
             do
                 if [[ "$var" != "$0" && "$var" != "$1" ]]
                 then
-                    pip install "$var"
+                    pip3 install "$var"
                 fi
             done
         fi
@@ -50,7 +50,7 @@ then
         echo "There is no virtual environment setup in this project."
     fi
 
-elif [ $1 = "uninstall" ]
+elif [ "$1" = "uninstall" ]
 then
     VIPIR=.vipir/
     if [ -d "$VIPIR" ]
@@ -61,7 +61,7 @@ then
             do
                 if [[ "$var" != "$0" && "$var" != "$1" ]]
                 then
-                    pip uninstall "$var"
+                    pip3 uninstall "$var"
                 fi
             done
         else
@@ -71,7 +71,7 @@ then
         echo "There is no virtual environment setup in this project."
     fi
 
-elif [ $1 = "env" ]
+elif [ "$1" = "env" ]
 then
     VIPIR=.vipir/
     if [ -z "$VIRTUAL_ENV" ]
@@ -79,7 +79,7 @@ then
         if [ -d "$VIPIR" ]
         then
             PROJECT=$(basename "$PWD")
-            source .vipir/$PROJECT/bin/activate
+            source ./.vipir/$PROJECT/bin/activate
         else
             echo "There is no virtual environment setup in this project."
         fi
@@ -87,14 +87,14 @@ then
         deactivate
     fi
 
-elif [ $1 = "graph" ]
+elif [ "$1" = "graph" ]
 then
     VIPIR=.vipir/
     if [ -d "$VIPIR" ]
     then
         if [ ! -z "$VIRTUAL_ENV" ]
         then
-            pip list
+            pip3 list
         else
             echo "Enter the virtual environment to list packages."
         fi
@@ -102,14 +102,14 @@ then
         echo "There is no virtual environment setup in this project."
     fi
 
-elif [ $1 = "freeze" ]
+elif [ "$1" = "freeze" ]
 then
     VIPIR=.vipir/
     if [ -d "$VIPIR" ]
     then
         if [ ! -z "$VIRTUAL_ENV" ]
         then
-            pip freeze > requirements.txt
+            pip3 freeze > requirements.txt
         else
             echo "Enter the virtual environment to freeze packages."
         fi
@@ -117,7 +117,7 @@ then
         echo "There is no virtual environment setup in this project."
     fi
 
-elif [ $1 = "require" ]
+elif [ "$1" = "require" ]
 then
     VIPIR=.vipir/
     if [ -d "$VIPIR" ]
@@ -126,7 +126,7 @@ then
         then
             if [ ! -z "$VIRTUAL_ENV" ]
             then
-                pip install -r requirements.txt
+                pip3 install -r requirements.txt
             else
                 echo "Enter the virtual environment to installed required packages."
             fi
